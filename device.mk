@@ -250,6 +250,10 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 ADDITIONAL_BUILD_PROPERTIES += \
     persist.sys.isUsbOtgEnabled=true
 
+# AICP Maintaner
+ADDITIONAL_BUILD_PROPERTIES += \
+    ro.aicp.maintainer=Hashbang173
+
 $(call inherit-product-if-exists, hardware/nvidia/tegra132/tegra132.mk)
 $(call inherit-product-if-exists, vendor/nvidia/proprietary-tegra132/tegra132-vendor.mk)
 $(call inherit-product-if-exists, vendor/htc/flounder/device-vendor.mk)
