@@ -38,6 +38,13 @@ BOARD_KERNEL_CMDLINE += androidboot.hardware=flounder
 
 TARGET_NO_RADIOIMAGE := true
 
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)/aarch64/aarch64-linux-android-4.9/bin
+KERNEL_TOOLCHAIN_PREFIX := aarch64-linux-android-
+TARGET_KERNEL_SOURCE := kernel/htc/flounder
+TARGET_KERNEL_CONFIG := flounder_defconfig
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+BOARD_KERNEL_CMDLINE := androidboot.selinux=enforcing
+
 TARGET_BOARD_PLATFORM := tegra132
 TARGET_BOARD_INFO_FILE := device/htc/flounder/board-info.txt
 
