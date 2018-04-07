@@ -19,33 +19,15 @@ PRODUCT_PACKAGES := \
     android.hardware.wifi@1.0-service \
     libwpa_client \
     hostapd \
-    wificond \
     wpa_supplicant \
     wpa_supplicant.conf
-
-BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
-
-# This ensures the needed build tools are available.
-# TODO: make non-linux builds happy with external/f2fs-tool; system/extras/f2fs_utils
-ifeq ($(HOST_OS),linux)
-TARGET_USERIMAGES_USE_F2FS := true
-endif
-
-LOCAL_FSTAB := $(LOCAL_PATH)/fstab.flounder
-
-TARGET_RECOVERY_FSTAB = $(LOCAL_FSTAB)
 
 PRODUCT_COPY_FILES := \
     $(LOCAL_PATH)/init.flounder.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.rc \
     $(LOCAL_PATH)/init.flounder.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.usb.rc \
     $(LOCAL_PATH)/init.recovery.flounder.rc:root/init.recovery.flounder.rc \
-    $(LOCAL_FSTAB):$(TARGET_COPY_OUT_VENDOR)/etc/fstab.flounder \
+    $(LOCAL_PATH)/fstab.flounder:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.flounder \
     $(LOCAL_PATH)/ueventd.flounder.rc:$(TARGET_COPY_OUT_VENDOR)/ueventd.rc
-
-# Copy flounder files as flounder64 so that ${ro.hardware} can find them
-PRODUCT_COPY_FILES += \
-    $(LOCAL_FSTAB):$(TARGET_COPY_OUT_VENDOR)/etc/fstab.flounder64 \
-    $(LOCAL_PATH)/init.recovery.flounder.rc:root/init.recovery.flounder64.rc
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/touch/touch_fusion.cfg:$(TARGET_COPY_OUT_VENDOR)/firmware/touch_fusion.cfg \
@@ -164,6 +146,7 @@ endif
 # NFC packages
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl-bcm \
+    android.hardware.nfc@1.0-service \
     nfc_nci.bcm2079x.default \
     NfcNci \
     Tag
@@ -173,8 +156,7 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@2.0-impl \
     android.hardware.audio@2.0-service \
     android.hardware.audio.effect@2.0-impl \
-    android.hardware.soundtrigger@2.0-impl \
-    android.hardware.soundtrigger@2.0-service
+    android.hardware.soundtrigger@2.0-impl
 
 # Bluetooth HAL
 PRODUCT_PACKAGES += \
@@ -212,13 +194,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
-    android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.mapper@2.0-impl \
     hwcomposer.flounder
 
 # Health HAL
 PRODUCT_PACKAGES += \
-    android.hardware.health@1.0-impl
+    android.hardware.health@1.0-impl \
+    android.hardware.health@1.0-service
 
 # Keymaster HAL
 PRODUCT_PACKAGES += \
@@ -227,8 +209,7 @@ PRODUCT_PACKAGES += \
 
 # Light HAL
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-impl \
-    lights.flounder
+    android.hardware.light@2.0-service.flounder
 
 # Memtrack HAL
 PRODUCT_PACKAGES += \
@@ -255,7 +236,7 @@ PRODUCT_PACKAGES += \
 
 # USB HAL
 PRODUCT_PACKAGES += \
-    android.hardware.usb@1.0-service
+    android.hardware.usb@1.0-service.flounder
 
 # Vibrator
 PRODUCT_PACKAGES += \
@@ -358,9 +339,9 @@ PRODUCT_PACKAGES += \
     verity_warning_images
 endif
 
-# In userdebug, add minidebug info the the boot image and the system server to support
-# diagnosing native crashes.
-ifneq (,$(filter userdebug, $(TARGET_BUILD_VARIANT)))
+# Add minidebug info the the boot image and the system server to support
+# diagnosing native crashes, only on eng builds.
+ifeq ($(TARGET_BUILD_VARIANT),eng)
     # Boot image.
     PRODUCT_DEX_PREOPT_BOOT_FLAGS += --generate-mini-debug-info
     # System server and some of its services.

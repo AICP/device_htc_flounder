@@ -19,7 +19,6 @@ on late-fs
     # Start services for bootanim
     start surfaceflinger
     start bootanim
-    start hwcomposer-2-1
     start configstore-hal-1-0
     start gralloc-2-0
 
@@ -106,16 +105,13 @@ on boot
     chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
     chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
+    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boostpulse
     chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
     chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration
     chown system system /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
-
-    # white notification LED
-    chown system system /sys/class/htc_sensorhub/sensor_hub/led_en
-    chmod 664           /sys/class/htc_sensorhub/sensor_hub/led_en
 
     # Enable CC4
     write /sys/devices/system/cpu/cpu0/cpuidle/state1/disabled 0
@@ -157,8 +153,8 @@ service watchdogd /sbin/watchdogd 10 20
     disabled
     seclabel u:r:watchdogd:s0
 
-# on userdebug and eng builds, enable kgdb on the serial console
-on property:ro.debuggable=1
+# on eng builds, enable kgdb on the serial console
+on property:ro.build.type=eng
     write /sys/module/kgdboc/parameters/kgdboc ttyFIQ0
     write /sys/module/fiq_debugger/parameters/kgdb_enable 1
 
